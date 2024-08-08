@@ -11,10 +11,10 @@ export function Navbar() {
         <Link href="/devblog" className="hover:text-primary" prefetch={false}>
             Devblog
         </Link>
-        <Link href="/equipe" className="hover:text-primary" prefetch={false}>
+        <Link href="#equipe" className="hover:text-primary" prefetch={false}>
             Équipes
         </Link>
-        <Link href="/contact" className="hover:text-primary" prefetch={false}>
+        <Link href="#contact" className="hover:text-primary" prefetch={false}>
           Contact
         </Link>
         <ModeToggle/>
