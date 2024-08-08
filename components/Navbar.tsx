@@ -8,7 +8,7 @@ export function Navbar() {
         Trivial Pursuit SN
       </Link>
       <nav className="flex items-center space-x-4 text-sm font-medium">
-        <Link href="/devblog" className="hover:text-primary" prefetch={false}>
+        <Link href="#devblog" className="hover:text-primary" prefetch={false}>
             Devblog
         </Link>
         <Link href="#equipe" className="hover:text-primary" prefetch={false}>

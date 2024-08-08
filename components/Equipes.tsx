@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 
 const membres = [
   { nom: "Erwan Sagnardon", role: "Développeur Web et Mobile", email: "erwan.sagnardon@campus-la-chataigneraie.org" },
-  { nom: "Corentin Nollet-Barray", role: "Responsable", email: "corentin.nollet-barray@campus-la-chataigneraie.org" },
-  { nom: "Eric Ung", role: "Responsable en second", email: "eric.ung@campus-la-chataigneraie.org" },
+  { nom: "Corentin Nollet-Barray", role: "Responsable et Manager", email: "corentin.nollet-barray@campus-la-chataigneraie.org" },
+  { nom: "Eric Ung", role: "Responsable", email: "eric.ung@campus-la-chataigneraie.org" },
   { nom: "Faran Lazar", role: "Design", email: "faran.lazar@campus-la-chataigneraie.org" },
   { nom: "Mathéo Fontaine", role: "Design", email: "matheo.fontaine@campus-la-chataigneraie.org" },
   { nom: "Gabriel Charpentier", role: "Développeur Application Mobile", email: "gabriel.charpentier@campus-la-chataigneraie.org" },
