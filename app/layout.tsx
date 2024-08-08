@@ -17,6 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
+      <link rel="icon" href="/assets/images/icon.png" sizes="any" />
       <body className={inter.className}>
       <ThemeProvider
             attribute="class"
