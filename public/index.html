@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Trivial Poursuit SN</title>
+</head>
+<body>
+    <header>
+        <h1>Trivial Poursuit SN</h1>
+    </header>
+
+    <div class="main">
+        <div class="container">
+            <!-- Connexion -->
+            <div class="card" id="login-card">
+                <h2>Connexion</h2>
+                <form id="login-form">
+                    <div class="input">
+                        <label for="username">Nom du joueur</label>
+                        <input type="text" name="username" id="username" required>
+                    </div>
+                    <button type="submit">Se connecter</button>
+                    <p>
+                        Trivial du geek se joue de 2 à 6 joueurs ! Chaque joueur
+                        ayant sa propre bibliothèque et débute sur sa couleur
+                        respective.
+                    </p>
+                </form>
+            </div>
+
+            <!-- Liste des parties -->
+            <div class="card" id="games-card" style="display: none;">
+                <h2>Liste des parties</h2>
+                <ul id="games-list"></ul>
+                <button id="create-game">Créer une nouvelle partie</button>
+            </div>
+
+            <!-- Bouton de démarrage de la partie -->
+            <div id="start-game-container" style="display: none;">
+                <button id="start-game">Démarrer la partie</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username');
+        const loginCard = document.getElementById('login-card');
+        const gamesCard = document.getElementById('games-card');
+        const gamesList = document.getElementById('games-list');
+        const createGameButton = document.getElementById('create-game');
+        const startGameContainer = document.getElementById('start-game-container');
+        const startGameButton = document.getElementById('start-game');
+
+        // Gestion de la connexion
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            if (username) {
+                socket.emit('set-username', username);
+                loginCard.style.display = 'none';
+                gamesCard.style.display = 'block';
+            }
+        });
+
+        // Mise à jour de la liste des parties
+        socket.on('update-games', (games) => {
+            gamesList.innerHTML = '';
+            games.forEach(game => {
+                const li = document.createElement('li');
+                li.textContent = `${game.id} (${game.players.length} joueurs)`;
+                if (!game.started) {
+                    const joinButton = document.createElement('button');
+                    joinButton.textContent = 'Rejoindre';
+                    joinButton.addEventListener('click', () => {
+                        socket.emit('join-game', game.id);
+                    });
+                    li.appendChild(joinButton);
+                }
+                gamesList.appendChild(li);
+
+                // Afficher le bouton de démarrage si le joueur est dans une partie avec 2 joueurs max
+                if (game.players.length === 2 && game.players.includes(socket.id)) {
+                    startGameContainer.style.display = 'block';
+                }
+            });
+        });
+
+        // Création d'une nouvelle partie
+        createGameButton.addEventListener('click', () => {
+            socket.emit('create-game');
+        });
+
+        // Gestion du démarrage de la partie
+        startGameButton.addEventListener('click', () => {
+            const gameId = gamesList.querySelector('li').textContent.split(' ')[0];
+            socket.emit('start-game', gameId);
+        });
+
+        socket.on('game-started', () => {
+            alert('La partie a démarré !');
+        });
+
+        // Réception des questions (exemple simplifié)
+        socket.on('question', (question) => {
+            alert(`Question : ${question.question}`);
+        });
+    </script>
+</body>
+</html>

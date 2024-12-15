@@ -56,6 +56,15 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         const username = players[socket.id];
         console.log(`${username} s'est déconnecté.`);
+
+        // Supprimer le joueur des parties
+        games.forEach((game) => {
+            game.players = game.players.filter(player => player !== username);
+        });
+
+        games = games.filter(game => game.players.length > 0); // Supprimer les parties vides
+        io.emit('update-games', games);
+
         delete players[socket.id];
     });
 
@@ -67,18 +76,26 @@ io.on('connection', (socket) => {
             socket.join(gameId);
             io.emit('update-games', games);
             console.log(`${players[socket.id]} a rejoint la partie ${gameId}`);
+
+            // Vérifier si la partie peut commencer
+            if (game.players.length === 2) {
+                io.to(gameId).emit('ready-to-start', { gameId });
+                console.log(`La partie ${gameId} est prête à démarrer.`);
+            }
         }
     });
 
     // Gérer le démarrage de la partie
     socket.on('start-game', (gameId) => {
         const game = games.find(g => g.id === gameId);
-        if (game && game.players.length >= 2) {
+        if (game && game.players.length === 2 && !game.started) {
             game.started = true;
             io.to(gameId).emit('game-started');
             console.log(`La partie ${gameId} a démarré`);
-            // Ici, tu peux envoyer les premières questions
-            io.to(gameId).emit('question', questions[0]); // Envoie la première question
+            // Envoyer la première question
+            io.to(gameId).emit('question', questions[0]);
+        } else {
+            socket.emit('error', "La partie ne peut pas démarrer. Assurez-vous qu'il y a exactement 2 joueurs.");
         }
     });
 });
